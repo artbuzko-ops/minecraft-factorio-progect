@@ -6,7 +6,23 @@ using System.Threading.Tasks;
 
 namespace Minecraft_factorio
 {
-    internal class CoalMine
+    public class CoalMine : Production
     {
+        public override void Produce(Warehouse warehouse, ref double availableElectricity)
+        {
+            if (ActiveRecipe == null) return;
+
+            if (availableElectricity < ActiveRecipe.RequiredElectricity)
+                return;
+
+            progress++;
+
+            if (progress >= ActiveRecipe.Duration)
+            {
+                availableElectricity -= ActiveRecipe.RequiredElectricity;
+                warehouse.AddResources(ActiveRecipe.ReceivedResources);
+                progress = 0;
+            }
+        }
     }
 }

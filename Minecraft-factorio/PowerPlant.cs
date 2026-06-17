@@ -6,7 +6,21 @@ using System.Threading.Tasks;
 
 namespace Minecraft_factorio
 {
-    internal class PowerPlant
+    public class PowerPlant : Production
     {
+        public override void Produce(Warehouse warehouse, ref double availableElectricity)
+        {
+            if (!warehouse.HasResources(ActiveRecipe.RequiredResources))
+                return;
+
+            progress++;
+
+            if (progress >= ActiveRecipe.Duration)
+            {
+                warehouse.RemoveResources(ActiveRecipe.RequiredResources);
+                availableElectricity += ActiveRecipe.GeneratedElectricity;
+                progress = 0;
+            }
+        }
     }
 }
